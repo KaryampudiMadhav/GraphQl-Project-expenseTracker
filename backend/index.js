@@ -7,6 +7,7 @@ import http from "http";
 import cors from "cors";
 import { expressMiddleware } from "@as-integrations/express5";
 import dotenv from "dotenv";
+import { connectionDB } from "./db/ConnectionDb.js";
 
 dotenv.config();
 
@@ -31,4 +32,5 @@ app.use(
 );
 
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+await connectionDB();
 console.log(`🚀 Server ready at http://localhost:4000/`);
