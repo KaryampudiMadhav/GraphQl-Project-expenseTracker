@@ -4,12 +4,27 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import GridBackground from "./components/GridBackground";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
+
+const httpLink = new HttpLink({
+  // TODO update this while deploying.
+  uri: "http://localhost:4000/graphql",
+  credentials: "include",
+});
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <GridBackground>
-        <App />
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
       </GridBackground>
     </BrowserRouter>
   </React.StrictMode>

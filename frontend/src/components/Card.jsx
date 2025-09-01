@@ -10,7 +10,6 @@ const categoryColorMap = {
   saving: "from-green-700 to-green-400",
   expense: "from-pink-800 to-pink-600",
   investment: "from-blue-700 to-blue-400",
-  // Add more categories and corresponding color classes as needed
 };
 
 const Card = ({ cardType }) => {
@@ -47,7 +46,7 @@ const Card = ({ cardType }) => {
         <div className="flex justify-between items-center">
           <p className="text-xs text-black font-bold">21 Sep, 2001</p>
           <img
-            src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
+            src={"/laxmi.jpg"}
             className="h-8 w-8 border rounded-full"
             alt=""
           />
