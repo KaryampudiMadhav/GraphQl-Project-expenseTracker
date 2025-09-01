@@ -1,8 +1,8 @@
-import { userModel } from "./../models/user.model";
+import { userModel } from "./../models/user.model.js";
 import bcrypt from "bcryptjs";
 const userResolver = {
   Mutation: {
-    signup: async (_, { input }, context) => {
+    signUp: async (_, { input }, context) => {
       try {
         const { username, password, name, gender } = input;
         if (!username || !password || !name || !gender) {
@@ -13,10 +13,10 @@ const userResolver = {
           throw new Error("User alredy Exists.");
         }
         const salts = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(salts, password);
+        const hashedPassword = await bcrypt.hash(password, salts);
 
-        const boysProfilePic = `https://avatar.iran.liara.run/public/boy?username=$username}`;
-        const girlsProfilePic = `https://avatar.iran.liara.run/public/girl?username=$username}`;
+        const boysProfilePic = `https://avatar.iran.liara.run/public/boy?{username=$username}`;
+        const girlsProfilePic = `https://avatar.iran.liara.run/public/girl?{username=$username}`;
 
         const newUser = userModel({
           username,
@@ -43,7 +43,8 @@ const userResolver = {
         if (!username || !password) {
           throw new Error("All fields are required.");
         }
-        const user = await context.authenticate("graphql-local", {
+
+        const { user } = await context.authenticate("graphql-local", {
           username,
           password,
         });
@@ -56,7 +57,7 @@ const userResolver = {
         throw new Error(error.message || "Error while login");
       }
     },
-    logout: async (_, _, context) => {
+    logout: async (_, __, context) => {
       try {
         await context.logout();
         context.req.session.destroy((err) => {
@@ -72,7 +73,7 @@ const userResolver = {
     },
   },
   Query: {
-    authuser: async (_, _, context) => {
+    authUser: async (_, __, context) => {
       try {
         const user = await context.getUser();
         return user;

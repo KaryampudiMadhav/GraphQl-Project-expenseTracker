@@ -46,7 +46,9 @@ const SignUpPage = () => {
     }
   };
 
-  const [signup, { loading, error }] = useMutation(SIGN_UP);
+  const [signup, { loading, error }] = useMutation(SIGN_UP, {
+    refetchQueries: ["GetAUTHENTICATEDUSER"],
+  });
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -111,6 +113,9 @@ const SignUpPage = () => {
                   {loading ? "Loading.." : "SignUp"}
                 </button>
               </div>
+              {error && (
+                <p className="text-red-500 text-sm mt-2">{error.message}</p>
+              )}
             </form>
             <div className="mt-4 text-sm text-gray-600 text-center">
               <p>

@@ -15,21 +15,25 @@ import { buildContext } from "graphql-passport";
 import { configurePassport } from "./passport/passport.config.js";
 
 dotenv.config();
+
+console.log("🔹 Step 1: Configuring Passport...");
 configurePassport();
+
 const app = express();
 const httpServer = http.createServer(app);
 
+console.log("🔹 Step 2: Setting up MongoDB session store...");
 const MongoDbStore = connectMongo(session);
-
 const store = new MongoDbStore({
   uri: process.env.MONGODB_URI,
   collection: "sessions",
 });
 
 store.on("error", (err) => {
-  console.log(err);
+  console.error("❌ MongoDB session store error:", err);
 });
 
+console.log("🔹 Step 3: Configuring session middleware...");
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -43,29 +47,41 @@ app.use(
   })
 );
 
+console.log("🔹 Step 4: Initializing Passport...");
 app.use(passport.initialize());
 app.use(passport.session());
 
+console.log("🔹 Step 5: Creating Apollo Server instance...");
 const server = new ApolloServer({
   typeDefs: mergedTypeDefs,
   resolvers: mergedResolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
+console.log("🔹 Step 6: Starting Apollo Server...");
 await server.start();
 
+console.log("🔹 Step 7: Applying Express middleware for GraphQL...");
 app.use(
-  "/",
+  "/graphql",
   cors({
     origin: "http://localhost:3000",
     credentials: true,
   }),
   express.json(),
   expressMiddleware(server, {
-    context: async ({ req, res }) => buildContext({ req, res }),
+    context: async ({ req, res }) => {
+      console.log("📌 Session check:", req.session);
+      console.log("📌 Authenticated user:", req.user);
+      return buildContext({ req, res });
+    },
   })
 );
 
-await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+console.log("🔹 Step 8: Connecting to MongoDB...");
 await connectionDB();
-console.log(`🚀 Server ready at http://localhost:4000/`);
+
+console.log("🔹 Step 9: Starting HTTP server...");
+await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+
+console.log(`🚀 Step 10: Server ready at http://localhost:4000/graphql`);
