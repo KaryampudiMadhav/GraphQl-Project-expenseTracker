@@ -14,7 +14,7 @@ const transactionResolver = {
       }
     },
 
-    transaction: async (_, __, { transactionId }) => {
+    transaction: async (_, { transactionId }, __) => {
       try {
         const transaction = await transactionModel.findById(transactionId);
         return transaction;
@@ -31,7 +31,7 @@ const transactionResolver = {
       try {
         const newTransaction = new transactionModel({
           ...input,
-          userId: context.userId,
+          userId: context.getUser()._id,
         });
         await newTransaction.save();
         return newTransaction;
@@ -53,15 +53,24 @@ const transactionResolver = {
         throw new Error("Error in updating the trasaction.");
       }
     },
-    deleteTransaction: async (_, { transactionId }, __) => {
+    deleteTransaction: async (_, { transactionId }, context) => {
       try {
-        const deletedTransaction = await transactionModel.findByIdAndDelete(
-          transactionId
-        );
-        return deletedTransaction;
+        const user = await context.getUser();
+        if (!user) throw new Error("Unauthorized");
+
+        const transaction = await transactionModel.findOneAndDelete({
+          _id: transactionId,
+          userId: user._id,
+        });
+
+        if (!transaction) {
+          throw new Error("Transaction not found or already deleted");
+        }
+
+        return transaction;
       } catch (error) {
-        console.log("Error in updating transaction.");
-        throw new Error("Error in updating the trasaction.");
+        console.error("Delete Transaction Error:", error);
+        throw new Error(error.message || "Error deleting the transaction.");
       }
     },
   },

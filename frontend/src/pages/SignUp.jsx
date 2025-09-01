@@ -14,6 +14,10 @@ const SignUpPage = () => {
     gender: "",
   });
 
+  const [signup, { loading, error }] = useMutation(SIGN_UP, {
+    refetchQueries: ["GetAUTHENTICATEDUSER"],
+  });
+
   const handleChange = (e) => {
     const { name, value, type } = e.target;
 
@@ -45,10 +49,6 @@ const SignUpPage = () => {
       toast.error(error.message || "Error in signUp.");
     }
   };
-
-  const [signup, { loading, error }] = useMutation(SIGN_UP, {
-    refetchQueries: ["GetAUTHENTICATEDUSER"],
-  });
 
   return (
     <div className="h-screen flex justify-center items-center">

@@ -1,6 +1,6 @@
 const transactionTypeDef = `#graphql
  type Transaction {
-   id : ID!
+   _id : ID!
    userId : ID!
    description : String!
    paymentType : String!
@@ -8,6 +8,7 @@ const transactionTypeDef = `#graphql
    amount : Float!
    location : String!
    getDistVersionate : String
+   date : String!
  }
 
  type Query {
