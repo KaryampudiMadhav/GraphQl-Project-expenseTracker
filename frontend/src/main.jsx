@@ -8,8 +8,9 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 
 const httpLink = new HttpLink({
-  // TODO update this while deploying.
-  uri: "http://localhost:4000/graphql",
+  uri: (import.meta.env.VITE_NODE_ENV = "development"
+    ? "http://localhost:4000/graphql"
+    : "/graphql"),
   credentials: "include",
 });
 

@@ -13,6 +13,7 @@ import session from "express-session";
 import connectMongo from "connect-mongodb-session";
 import { buildContext } from "graphql-passport";
 import { configurePassport } from "./passport/passport.config.js";
+import path from "path";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ configurePassport();
 
 const app = express();
 const httpServer = http.createServer(app);
+const __dirname = path.resolve();
 
 console.log("🔹 Step 2: Setting up MongoDB session store...");
 const MongoDbStore = connectMongo(session);
@@ -77,6 +79,12 @@ app.use(
     },
   })
 );
+
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+});
 
 console.log("🔹 Step 8: Connecting to MongoDB...");
 await connectionDB();
