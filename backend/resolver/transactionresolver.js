@@ -14,6 +14,33 @@ const transactionResolver = {
       }
     },
 
+    categoricalStatistics: async (_, __, context) => {
+      if (!context.getUser()) {
+        throw new Error("The User is Unauthorized.");
+      }
+
+      const userId = context.getUser()._id;
+
+      try {
+        const transactions = await transactionModel.find({ userId });
+        const categoryMap = {};
+        transactions.forEach((transaction) => {
+          if (!categoryMap[transaction.category]) {
+            categoryMap[transaction.category] = 0;
+          }
+          categoryMap[transaction.category] += transaction.amount;
+        });
+
+        return Object.entries(categoryMap).map(([category, totalAmount]) => ({
+          category,
+          totalAmount,
+        }));
+      } catch (error) {
+        console.log(error);
+        throw new Error("The Error in Category Statiscs.");
+      }
+    },
+
     transaction: async (_, { transactionId }, __) => {
       try {
         const transaction = await transactionModel.findById(transactionId);
@@ -23,8 +50,6 @@ const transactionResolver = {
         throw new Error("Error in the getting transaction");
       }
     },
-
-    // TODO categorical statistics.
   },
   Mutation: {
     createTransaction: async (_, { input }, context) => {

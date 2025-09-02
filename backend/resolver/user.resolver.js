@@ -1,5 +1,6 @@
 import { userModel } from "./../models/user.model.js";
 import bcrypt from "bcryptjs";
+import { transactionModel } from "./../models/transactions.model.js";
 const userResolver = {
   Mutation: {
     signUp: async (_, { input }, context) => {
@@ -92,8 +93,18 @@ const userResolver = {
       }
     },
   },
-
-  // TODO relationship for the Transaction.
+  User: {
+    transactions: async (parent) => {
+      try {
+        const transactions = await transactionModel.find({
+          userId: parent._id,
+        });
+        return transactions;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 };
 
 export default userResolver;
