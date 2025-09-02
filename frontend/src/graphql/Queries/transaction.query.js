@@ -24,6 +24,13 @@ export const GET_TRANSACTION = gql`
       date
       category
       description
+
+      user {
+        _id
+        username
+        name
+        profilePicture
+      }
     }
   }
 `;

@@ -9,6 +9,7 @@ const transactionTypeDef = `#graphql
    location : String!
    getDistVersionate : String
    date : String!
+   user : User!
  }
 
  type Query {

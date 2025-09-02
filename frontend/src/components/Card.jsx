@@ -16,7 +16,7 @@ const categoryColorMap = {
   investment: "from-blue-700 to-blue-400",
 };
 
-const Card = ({ item }) => {
+const Card = ({ item, authUser }) => {
   const [deleteTransaction, { loading, error }] = useMutation(
     DELETE_TRANSACTION,
     {
@@ -78,7 +78,7 @@ const Card = ({ item }) => {
         <div className="flex justify-between items-center">
           <p className="text-xs text-black font-bold">{date}</p>
           <img
-            src={"/laxmi.jpg"}
+            src={authUser?.profilePicture}
             className="h-8 w-8 border rounded-full"
             alt=""
           />

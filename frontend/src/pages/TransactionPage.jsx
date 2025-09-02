@@ -16,6 +16,8 @@ const TransactionPage = () => {
     },
   });
 
+  console.log("Transaction and user", data);
+
   const [formData, setFormData] = useState({
     description: data?.transaction.description || "",
     paymentType: data?.transaction.paymentType || "",

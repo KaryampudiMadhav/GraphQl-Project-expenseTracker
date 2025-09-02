@@ -16,15 +16,15 @@ const userResolver = {
         const salts = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salts);
 
-        const boysProfilePic = `https://avatar.iran.liara.run/public/boy?{username=$username}`;
-        const girlsProfilePic = `https://avatar.iran.liara.run/public/girl?{username=$username}`;
+        const boysProfilePic = `https://avatar.iran.liara.run/public/boy?{username=${username}}`;
+        const girlsProfilePic = `https://avatar.iran.liara.run/public/girl?{username=${username}}`;
 
         const newUser = userModel({
           username,
           password: hashedPassword,
           gender,
           name,
-          profilePic: gender === "male" ? boysProfilePic : girlsProfilePic,
+          profilePicture: gender === "male" ? boysProfilePic : girlsProfilePic,
         });
 
         await newUser.save();
